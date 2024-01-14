@@ -225,8 +225,6 @@ public class UIController {
             // Code to restart the game
             modalStage.close();
             restartGame();
-            snake.setSnakeMoving();
-
         });
 
         returnToGame.setOnAction(event -> {
@@ -297,6 +295,7 @@ public class UIController {
         gameEngine.drawSnake();
         gameEngine.drawFood(grid);
         gamePaused = false;
+        timelineHandler.setCycleCount();
         timelineHandler.startTimeline();
 
     }
