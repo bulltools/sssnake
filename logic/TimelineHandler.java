@@ -22,8 +22,9 @@ public class TimelineHandler {
     }
 
     // Setter method for GameEngine
-    public void setGameEngine(GameEngine gameEngine) {
+    public void setDependencies(GameEngine gameEngine, UIController ui) {
         this.gameEngine = gameEngine;
+        this.ui = ui;
         initializeTimelines();
     }
 

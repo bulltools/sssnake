@@ -33,20 +33,20 @@ public class GameEngine {
     public int score = 0;
     public boolean snakeMoving = true;
 
-
     public GameEngine(Snake snake, UIController ui, GridPane grid) {
         this.snake = snake;
         this.ui = ui;
         this.grid = grid;
         initializeFood();
-        setTimelineHandler(timelineHandler);
+        setDependencies(timelineHandler, ui);
     }
 
     private TimelineHandler timelineHandler;
 
     // Setter method for TimelineHandler
-    public void setTimelineHandler(TimelineHandler timelineHandler) {
+    public void setDependencies(TimelineHandler timelineHandler, UIController ui) {
         this.timelineHandler = timelineHandler;
+        this.ui = ui;
     }
 
     public void initializeFood() {
@@ -88,7 +88,6 @@ public class GameEngine {
 
         // Get the position of the food from the Food object
         foodPosition = food.getPosition();
-        java.awt.Point goldenFruitposition = goldenFruit.getPosition();
 
         // Add the food ellipse to the root at the appropriate position
         grid.add(foodEllipse, foodPosition.x, foodPosition.y);
@@ -220,12 +219,12 @@ public class GameEngine {
         timelineHandler.stopTimeline();
         timelineHandler.getMainTimeline().getKeyFrames().set(0,
                 new KeyFrame(Duration.millis(snake.getSnakeSpeed()), event -> {
-            if (snakeMoving && !ui.gamePaused) {
-                snake.move();
-                drawSnake();
-                handleCollision();
-            }
-        }));
+                    if (snakeMoving && !ui.gamePaused) {
+                        snake.move();
+                        drawSnake();
+                        handleCollision();
+                    }
+                }));
         timelineHandler.startTimeline();
     };
 
@@ -261,17 +260,26 @@ public class GameEngine {
             timelineHandler.stopTimeline();
             timelineHandler.getMainTimeline().getKeyFrames().set(0,
                     new KeyFrame(Duration.millis(snake.getSnakeSpeed()), event -> {
-                if (snakeMoving && !ui.gamePaused) {
-                    snake.move();
-                    drawSnake();
-                    handleCollision();
-                }
-            }));
+                        if (snakeMoving && !ui.gamePaused) {
+                            snake.move();
+                            drawSnake();
+                            handleCollision();
+                        }
+                    }));
             timelineHandler.startTimeline();
         }
     }
 
     public int getScore() {
         return score;
+    }
+
+    public int resetScore() {
+        return score = 0;
+    }
+
+    public void resetFood() {
+        food = new Food(Constants.GRID_SIZE);
+        generateNewFood();
     }
 }

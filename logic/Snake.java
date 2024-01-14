@@ -23,7 +23,7 @@ public class Snake {
     Point head;
     int snakeX;
     int snakeY;
-    boolean snakeMoving = true;
+    private boolean snakeMoving = true;
 
 
     public static class Point {
@@ -49,6 +49,13 @@ public class Snake {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public void resetDirection() {
+        body = new LinkedList<>();
+        body.add(new Point(Constants.MIDPOINT, Constants.MIDPOINT + 1)); // Initial position of the snake's tail
+        body.add(new Point(Constants.MIDPOINT, Constants.MIDPOINT));
+        this.direction = Direction.RIGHT;
     }
 
     public void setSnakeSize(int size) {
@@ -137,6 +144,14 @@ public class Snake {
         return body.getFirst();
     }
 
+    public boolean isSnakeMoving() {
+        return snakeMoving;
+    }
+
+    public void setSnakeMoving() {
+        this.snakeMoving = true;
+    }
+
     public int getSnakeLength() {
         return snakeLength;
     }
@@ -159,5 +174,14 @@ public class Snake {
 
     public int resetSnakeSpeed() {
         return snakeSpeed = 120;
+    }
+
+    public void resetSnake() {
+        body = new LinkedList<>();
+        body.add(new Point(Constants.MIDPOINT, Constants.MIDPOINT + 1)); // Initial position of the snake's tail
+        body.add(new Point(Constants.MIDPOINT, Constants.MIDPOINT));
+        this.direction = Direction.RIGHT; // initial direction
+        snakeLength = 2;
+        snakeSpeed = 120;
     }
 }

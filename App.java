@@ -25,8 +25,9 @@ public class App extends Application {
         gameEngine = new GameEngine(snake, ui, grid);
         timelineHandler = new TimelineHandler(snake, ui);
         // Set references between GameEngine and TimelineHandler
-        gameEngine.setTimelineHandler(timelineHandler);
-        timelineHandler.setGameEngine(gameEngine);
+        ui.setDependencies(timelineHandler, gameEngine);
+        gameEngine.setDependencies(timelineHandler, ui);
+        timelineHandler.setDependencies(gameEngine, ui);
         // Setup the UI
         ui.setupKeyHandlers(gameControls);
         ui.getMenuButton();

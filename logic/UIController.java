@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -31,9 +30,8 @@ public class UIController {
     private Button btn;
     private Label scoreLabel, gameStatus;
     private Stage primaryStage, modalStage;
-    private Timeline powerupTimeline;
-    private Snake snake;
-    private GameControls gameControls;
+    Snake snake;
+    GameControls gameControls;
     private int existingHighScore;
 
 
@@ -46,6 +44,15 @@ public class UIController {
         this.snake = snake;
         this.gameControls = gameControls;
         createUI();
+    }
+
+    private TimelineHandler timelineHandler;
+    private GameEngine gameEngine;
+
+    // Setter method for TimelineHandler
+    public void setDependencies(TimelineHandler timelineHandler, GameEngine gameEngine) {
+        this.timelineHandler = timelineHandler;
+        this.gameEngine = gameEngine;
     }
 
     private void createUI() {
@@ -109,14 +116,11 @@ public class UIController {
     public Scene getScene() {
         return scene;
     }
-    
-    /*
-     * Methods for manipulating the UI
-     */
 
-    public void updateScore(int score) {
-        scoreLabel.setText("Score: " + score);
+    public void updateScore(int newScore) {
+        scoreLabel.setText("Score: " + newScore);
     }
+
 
     private void saveScoreToFile(int score) {
         File file = new File("highscore.txt");
@@ -191,7 +195,7 @@ public class UIController {
         modalStage = new Stage();
 
         gamePaused = true;
-        // timeline.pause();
+        timelineHandler.pauseTimeline();
 
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.initOwner(primaryStage);
@@ -220,15 +224,12 @@ public class UIController {
         restartGame.setOnAction(event -> {
             // Code to restart the game
             modalStage.close();
-            // restartGame();
-
-            powerupTimeline.stop();
-            powerupTimeline.play();
+            restartGame();
+            snake.setSnakeMoving();
 
         });
 
         returnToGame.setOnAction(event -> {
-            // Code to return to the game
             modalStage.close();
             resumeGame();
         });
@@ -262,54 +263,43 @@ public class UIController {
     }
 
     private void resumeGame() {
-        // Resume the game
         gamePaused = false;
-        // timeline.play();
+        timelineHandler.startTimeline();
     }
 
-    // private void restartGame() {
-    // // Stop the current timeline
-    // timeline.stop();
-    // // Reset game state
-    // snakeLength = 2;
-    // snakeSpeed = 120; // Reset snake speed
-    // score = 0;
-    // snakeMoving = true;
-    // gamePaused = false;
+    private void restartGame() {
+        // Stop the current timeline
+        timelineHandler.stopTimeline();
+        timelineHandler.stopPowerupTimeline();
+        timelineHandler.stopSpeedFruitDelayTimeline();
 
-    // // Reset snake and food
-    // snake = new Snake(midPoint, midPoint);
-    // snake.setDirection(Direction.RIGHT); // Set initial direction
-    // food = new Food(size);
-    // generateNewFood();
+        // Reset game state
+        snake.resetSnakeLength();
+        snake.resetSnakeSpeed();
+        snake.setSnakeMoving();
 
-    // // Clear the grid
-    // grid.getChildren().clear();
+        int newScore = gameEngine.resetScore();
+        updateScore(newScore);
 
-    // // Create a new GameControls instance or update the existing one
-    // GameControls gameControls = new GameControls(snake);
+        // Reset snake and food
+        snake.resetDirection();
+        gameEngine.resetFood();
 
-    // // Reset score label
-    // scoreLabel.setText("Score: " + score);
+        // Clear the grid
+        grid.getChildren().clear();
+        gameControls.setSnake(snake);
 
-    // // Start a new timeline
-    // timeline = new Timeline(new KeyFrame(Duration.millis(snakeSpeed), event -> {
-    // if (snakeMoving) {
-    // snake.move();
-    // drawSnake(grid);
-    // checkCollision();
-    // }
-    // }));
-    // timeline.setCycleCount(Timeline.INDEFINITE);
-    // timeline.play();
 
-    // // Update key event handlers
-    // setupKeyHandlers(scene, gameControls);
 
-    // Draw the initial state of the game
-    // drawSnake(grid);
-    // drawFood(grid, cellSize);
-    // }
+        // // Update key event handlers
+        setupKeyHandlers(gameControls);
+
+        gameEngine.drawSnake();
+        gameEngine.drawFood(grid);
+        gamePaused = false;
+        timelineHandler.startTimeline();
+
+    }
 
     public GridPane getGrid() {
         return grid;
