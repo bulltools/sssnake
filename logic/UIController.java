@@ -41,8 +41,7 @@ public class UIController {
 
     public UIController(Stage primaryStage, Snake snake, GameControls gameControls, GridPane grid) {
         this.grid = grid;
-        // grid.setPrefSize(576, 576);
-
+        grid.setPrefSize(576, 576);
         this.primaryStage = primaryStage;
         this.snake = snake;
         this.gameControls = gameControls;
@@ -159,7 +158,6 @@ public class UIController {
 
         existingHighScore = readHighScoreFromFile();
         if (score > existingHighScore) {
-            System.out.println(existingHighScore);
             gameStatus.setText("High score!" + "\n" + score);
             gameStatus.setStyle("-fx-text-fill: BLUE; -fx-font-size: 44px; -fx-font-weight: bold;");
         } 

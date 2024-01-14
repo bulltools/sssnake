@@ -63,9 +63,9 @@ public class GameEngine {
         for (int row = 0; row < Constants.GRID_SIZE; row++) {
             for (int col = 0; col < Constants.GRID_SIZE; col++) {
                 Rectangle rect = new Rectangle(Constants.CELL_SIZE, Constants.CELL_SIZE);
+                rect.setStroke(Color.rgb(59, 196, 96));
+                rect.setEffect(new DropShadow(1, Color.GREEN));
                 rect.setFill(Color.rgb(59, 196, 96));
-                rect.setStroke(Color.rgb(44, 44, 44));
-                rect.setEffect(new DropShadow(5, Color.BLACK));
                 grid.add(rect, col, row);
             }
         }
@@ -155,7 +155,6 @@ public class GameEngine {
 
         // Normal food
         if (foodPosition.x == headPosition.x && foodPosition.y == headPosition.y) {
-            System.out.println("Food eaten");
             score++;
             ui.updateScore(score);
             this.snake.increaseSnakeLength(1);
@@ -165,12 +164,10 @@ public class GameEngine {
         }
         // Golden fruit
         if (goldenfruitposition.getX() == headPosition.x && goldenfruitposition.getY() == headPosition.y) {
-            System.out.println("Golden fruit eaten");
             score += 5;
             timelineHandler.stopPowerupTimeline();
             ui.updateScore(score);
             if (!isFoodOnPowerupOrSnake) {
-                System.out.println("Generated!");
                 grid.getChildren().remove(speedFruitEllipse);
                 generateNewGoldenfruit();
             }

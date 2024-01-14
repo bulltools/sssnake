@@ -4,11 +4,16 @@ import javafx.animation.Timeline;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import utils.Constants;
 
+import utils.Constants;
 import java.util.LinkedList;
 
 public class Snake {
+    // Enum for the direction of the snake
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
+
     private LinkedList<Point> body;
     private Direction direction;
     Timeline timeline;
@@ -20,9 +25,6 @@ public class Snake {
     int snakeY;
     boolean snakeMoving = true;
 
-    public enum Direction {
-        UP, DOWN, LEFT, RIGHT
-    }
 
     public static class Point {
         public int x;
@@ -87,8 +89,8 @@ public class Snake {
             Rectangle rect = new Rectangle(cellSize, cellSize);
     
             if (i == 0) {
-                // Color the head differently
-                rect.setFill(Color.BLUE); // You can use any color for the head
+                // Head
+                rect.setFill(Color.BLUE);
             } else {
                 rect.setFill(Color.WHITE);
             }
@@ -149,5 +151,13 @@ public class Snake {
 
     public int increaseSnakeSpeed(int i) {
         return snakeSpeed -= i;
+    }
+
+    public int resetSnakeLength() {
+        return snakeLength = 2;
+    }
+
+    public int resetSnakeSpeed() {
+        return snakeSpeed = 120;
     }
 }
