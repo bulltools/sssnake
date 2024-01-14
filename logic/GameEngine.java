@@ -8,6 +8,8 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import utils.Constants;
+
 public class GameEngine {
     private Snake snake;
     private Food food;
@@ -29,14 +31,8 @@ public class GameEngine {
     private boolean isFoodOnPowerupOrSnake;
 
     public int score = 0;
-    public int snakeLength = 2;
-    public int snakeSpeed = 120;
     public boolean snakeMoving = true;
 
-    // TODO: Move to separate class as constants
-    final int size = 16;
-    final int midPoint = (size / 2) - 1;
-    final int cellSize = 35;
 
     public GameEngine(Snake snake, UIController ui, GridPane grid) {
         this.snake = snake;
@@ -54,9 +50,9 @@ public class GameEngine {
     }
 
     public void initializeFood() {
-        food = new Food(size);
-        goldenFruit = new GoldenFruitPowerup(size);
-        speedFruit = new SpeedBoostPowerup(size);
+        food = new Food(Constants.GRID_SIZE);
+        goldenFruit = new GoldenFruitPowerup(Constants.GRID_SIZE);
+        speedFruit = new SpeedBoostPowerup(Constants.GRID_SIZE);
     }
 
     public void drawSnake() {
@@ -64,9 +60,9 @@ public class GameEngine {
         grid.getChildren().clear();
 
         // Draw the background grid
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                Rectangle rect = new Rectangle(cellSize, cellSize);
+        for (int row = 0; row < Constants.GRID_SIZE; row++) {
+            for (int col = 0; col < Constants.GRID_SIZE; col++) {
+                Rectangle rect = new Rectangle(Constants.CELL_SIZE, Constants.CELL_SIZE);
                 rect.setFill(Color.rgb(59, 196, 96));
                 rect.setStroke(Color.rgb(44, 44, 44));
                 rect.setEffect(new DropShadow(5, Color.BLACK));
@@ -82,12 +78,12 @@ public class GameEngine {
         drawSpeedFruit(grid);
 
         // Draw the snake with the updated state
-        snake.draw(grid, cellSize);
+        snake.draw(grid, Constants.CELL_SIZE);
         eatFood();
     }
 
     public void drawFood(GridPane grid) {
-        Ellipse foodEllipse = new Ellipse(cellSize / 2.0, cellSize / 2.0);
+        Ellipse foodEllipse = new Ellipse(Constants.CELL_SIZE / 2.0, Constants.CELL_SIZE / 2.0);
         foodEllipse.setFill(Color.RED);
 
         // Get the position of the food from the Food object
@@ -99,11 +95,11 @@ public class GameEngine {
     }
 
     private void generateNewGoldenfruit() {
-        goldenFruit.randomizePosition(size);
+        goldenFruit.randomizePosition(Constants.GRID_SIZE);
         goldenfruitposition = goldenFruit.getPosition();
         drawGoldenFruit(ui.getGrid());
-        increaseSnakeLength(3);
-        snake.setSnakeSize(snakeLength);
+        snake.increaseSnakeLength(2);
+        snake.setSnakeSize(this.snake.getSnakeLength());
     }
 
     public boolean isFoodOnPowerupOrSnake() {
@@ -125,7 +121,7 @@ public class GameEngine {
     }
 
     private void drawGoldenFruit(GridPane grid) {
-        goldenfruitEllipse = new Ellipse(cellSize / 2.0, cellSize / 2.0);
+        goldenfruitEllipse = new Ellipse(Constants.CELL_SIZE / 2.0, Constants.CELL_SIZE / 2.0);
         goldenfruitEllipse.setFill(Color.YELLOW);
 
         // Set opacity based on powerup visibility
@@ -140,7 +136,7 @@ public class GameEngine {
 
     private void drawSpeedFruit(GridPane grid) {
         if (!isSpeedFruitEaten) {
-            speedFruitEllipse = new Ellipse(cellSize / 2.0, cellSize / 2.0);
+            speedFruitEllipse = new Ellipse(Constants.CELL_SIZE / 2.0, Constants.CELL_SIZE / 2.0);
             speedFruitEllipse.setFill(Color.BLACK);
 
             // Set opacity based on powerup visibility
@@ -162,7 +158,7 @@ public class GameEngine {
             System.out.println("Food eaten");
             score++;
             ui.updateScore(score);
-            snakeLength++;
+            this.snake.increaseSnakeLength(1);
             generateNewFood();
             increaseSnakeSpeed();
 
@@ -213,19 +209,20 @@ public class GameEngine {
 
     public void handleCollision() {
         // You can add more collision checks here if needed
-        if (snake.checkCollision(size - 1)) {
+        if (snake.checkCollision(Constants.GRID_SIZE - 1)) {
             snakeMoving = false;
             ui.displayGameOver(this.getScore());
         }
     }
 
     public void generateNewSpeedFruit() {
-        speedFruit.randomizePosition(size);
+        speedFruit.randomizePosition(Constants.GRID_SIZE);
         speedFruitPosition = speedFruit.getPosition();
         drawSpeedFruit(grid);
 
         timelineHandler.stopTimeline();
-        timelineHandler.getMainTimeline().getKeyFrames().set(0, new KeyFrame(Duration.millis(snakeSpeed), event -> {
+        timelineHandler.getMainTimeline().getKeyFrames().set(0,
+                new KeyFrame(Duration.millis(snake.getSnakeSpeed()), event -> {
             if (snakeMoving && !ui.gamePaused) {
                 snake.move();
                 drawSnake();
@@ -237,12 +234,12 @@ public class GameEngine {
 
     private void generateNewFood() {
         do {
-            food.randomizePosition(size);
+            food.randomizePosition(Constants.GRID_SIZE);
             foodPosition = food.getPosition();
         } while (isFoodOnSnake());
 
         drawFood(ui.getGrid());
-        snake.setSnakeSize(snakeLength);
+        snake.setSnakeSize(snake.getSnakeLength());
     }
 
     private boolean isFoodOnSnake() {
@@ -262,10 +259,11 @@ public class GameEngine {
 
     public void increaseSnakeSpeed() {
 
-        if (score % 5 == 0 && snakeSpeed >= 0) {
-            snakeSpeed -= 5;
+        if (score % 5 == 0 && snake.getSnakeSpeed() >= 0) {
+            snake.increaseSnakeSpeed(5);
             timelineHandler.stopTimeline();
-            timelineHandler.getMainTimeline().getKeyFrames().set(0, new KeyFrame(Duration.millis(snakeSpeed), event -> {
+            timelineHandler.getMainTimeline().getKeyFrames().set(0,
+                    new KeyFrame(Duration.millis(snake.getSnakeSpeed()), event -> {
                 if (snakeMoving && !ui.gamePaused) {
                     snake.move();
                     drawSnake();
@@ -278,17 +276,5 @@ public class GameEngine {
 
     public int getScore() {
         return score;
-    }
-
-    public int getSnakeLength() {
-        return snakeLength;
-    }
-
-    public int getSnakeSpeed() {
-        return snakeSpeed;
-    }
-
-    public int increaseSnakeLength(int i) {
-        return snakeLength += i;
     }
 }

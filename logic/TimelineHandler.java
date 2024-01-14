@@ -8,8 +8,8 @@ import javafx.util.Duration;
 import utils.Constants;
 
 public class TimelineHandler {
+    UIController ui;
     private Snake snake;
-    private UIController ui;
     private GameEngine gameEngine;
 
     private Timeline mainTimeline;
@@ -29,7 +29,7 @@ public class TimelineHandler {
 
     private void initializeTimelines() {
         // Initialize and configure the timelines
-        mainTimeline = new Timeline(new KeyFrame(Duration.millis(gameEngine.getSnakeSpeed()), event -> {
+        mainTimeline = new Timeline(new KeyFrame(Duration.millis(snake.getSnakeSpeed()), event -> {
             mainTimeline.setCycleCount(Timeline.INDEFINITE);
             if (gameEngine.snakeMoving) {
                 snake.move();

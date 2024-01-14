@@ -2,7 +2,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
 
-// Game logic imports
 import logic.GameControls;
 import logic.GameEngine;
 import logic.UIController;
@@ -10,7 +9,6 @@ import logic.Snake;
 import logic.TimelineHandler;
 
 public class App extends Application {
-
     // Game entities
     private Snake snake;
     private UIController ui;
@@ -33,12 +31,10 @@ public class App extends Application {
         ui.setupKeyHandlers(gameControls);
         ui.getMenuButton();
         ui.getScene();
-
         // Start the game
         primaryStage.show();
         timelineHandler.setandStartTimelines();
     }
-
     public static void main(String[] args) {
         launch(args);
     }

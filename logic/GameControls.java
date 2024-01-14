@@ -2,19 +2,15 @@ package logic;
 
 import javafx.scene.input.KeyCode;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class GameControls {
     private Snake snake;
     private final Map<KeyCode, Snake.Direction> keyMappings;
-    private Set<KeyCode> pressedKeys;
 
     public GameControls(Snake snake) {
         this.snake = snake;
         this.keyMappings = new HashMap<>();
-        this.pressedKeys = new HashSet<>();
         initializeKeys();
     }
 
@@ -47,5 +43,4 @@ public class GameControls {
             snake.setDirection(newDirection);
         }
     }
-
 }

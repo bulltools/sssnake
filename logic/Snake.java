@@ -13,13 +13,12 @@ public class Snake {
     private Direction direction;
     Timeline timeline;
     
-    int snakeLength = 2;
+    private int snakeLength = 2;
+    private int snakeSpeed = 120;
     Point head;
     int snakeX;
     int snakeY;
-
-
-    private boolean snakeMoving = true; // flag to control whether the snake is moving
+    boolean snakeMoving = true;
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
@@ -134,5 +133,21 @@ public class Snake {
 
     public Point getHeadPosition() {
         return body.getFirst();
+    }
+
+    public int getSnakeLength() {
+        return snakeLength;
+    }
+
+    public int getSnakeSpeed() {
+        return snakeSpeed;
+    }
+
+    public int increaseSnakeLength(int i) {
+        return snakeLength += i;
+    }
+
+    public int increaseSnakeSpeed(int i) {
+        return snakeSpeed -= i;
     }
 }
