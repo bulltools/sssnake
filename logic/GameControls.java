@@ -47,4 +47,5 @@ public class GameControls {
             snake.setDirection(newDirection);
         }
     }
+
 }

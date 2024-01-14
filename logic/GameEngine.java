@@ -284,6 +284,10 @@ public class GameEngine {
         return snakeLength;
     }
 
+    public int getSnakeSpeed() {
+        return snakeSpeed;
+    }
+
     public int increaseSnakeLength(int i) {
         return snakeLength += i;
     }

@@ -22,6 +22,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+// Utils
+import utils.Constants;
+
 public class UIController {
     private GridPane grid;
     private Scene scene;
@@ -33,9 +36,6 @@ public class UIController {
     private GameControls gameControls;
     private int existingHighScore;
 
-    final int size = 16;
-    final int midPoint = (size / 2) - 1;
-    final int cellSize = 35;
 
     public boolean gamePaused;
 
@@ -145,13 +145,16 @@ public class UIController {
         }
     }
 
+    public void setupKeyHandlers(GameControls gameControls) {
+        this.scene.setOnKeyPressed(event -> gameControls.handleKeyPress(event.getCode()));
+    }
 
     public void displayGameOver(int score) {
 
         GridPane.setValignment(gameStatus, VPos.CENTER);
         GridPane.setHalignment(gameStatus, HPos.CENTER);
 
-        grid.add(gameStatus, 5, 4, midPoint, midPoint);
+        grid.add(gameStatus, 5, 4, Constants.MIDPOINT, Constants.MIDPOINT);
         saveScoreToFile(score);
 
         existingHighScore = readHighScoreFromFile();

@@ -4,35 +4,32 @@ import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.util.Duration;
 
+// Utils
+import utils.Constants;
+
 public class TimelineHandler {
     private Snake snake;
     private UIController ui;
-    private int snakeSpeed;
-    private int size;
-    private int cellSize;
     private GameEngine gameEngine;
 
     private Timeline mainTimeline;
     private Timeline powerupTimeline;
     private Timeline speedFruitDelayTimeline;
 
-    public TimelineHandler(Snake snake, UIController ui, int snakeSpeed, int size, int cellSize) {
+    public TimelineHandler(Snake snake, UIController ui) {
         this.snake = snake;
         this.ui = ui;
-        this.snakeSpeed = snakeSpeed;
-        this.size = size;
-        this.cellSize = cellSize;
-        initializeTimeline();
     }
 
     // Setter method for GameEngine
     public void setGameEngine(GameEngine gameEngine) {
         this.gameEngine = gameEngine;
+        initializeTimelines();
     }
 
-    private void initializeTimeline() {
+    private void initializeTimelines() {
         // Initialize and configure the timelines
-        mainTimeline = new Timeline(new KeyFrame(Duration.millis(snakeSpeed), event -> {
+        mainTimeline = new Timeline(new KeyFrame(Duration.millis(gameEngine.getSnakeSpeed()), event -> {
             mainTimeline.setCycleCount(Timeline.INDEFINITE);
             if (gameEngine.snakeMoving) {
                 snake.move();
@@ -42,7 +39,7 @@ public class TimelineHandler {
         }));
         powerupTimeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
             if (!gameEngine.isFoodOnPowerupOrSnake()) {
-                gameEngine.goldenFruit.randomizePosition(size);
+                gameEngine.goldenFruit.randomizePosition(Constants.GRID_SIZE);
             }
         }));
         speedFruitDelayTimeline = new Timeline(new KeyFrame(Duration.seconds(20), event -> {
@@ -50,6 +47,13 @@ public class TimelineHandler {
                 gameEngine.generateNewSpeedFruit();
             }
         }));
+    }
+
+    public void setandStartTimelines() {
+        setCycleCount();
+        startTimeline();
+        startPowerupTimeline();
+        startSpeedFruitDelayTimeline();
     }
 
     // Getter methods

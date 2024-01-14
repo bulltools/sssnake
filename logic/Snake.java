@@ -4,6 +4,7 @@ import javafx.animation.Timeline;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import utils.Constants;
 
 import java.util.LinkedList;
 
@@ -17,10 +18,10 @@ public class Snake {
     int snakeX;
     int snakeY;
 
-    // Flag to control whether the snake is moving
-    private boolean snakeMoving = true;
 
-    public enum Direction { // using enums is better than ints, as it's more readable
+    private boolean snakeMoving = true; // flag to control whether the snake is moving
+
+    public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
 
@@ -34,11 +35,11 @@ public class Snake {
         }
     }
 
-    public Snake(int initialX, int initialY) {
+    public Snake() {
         body = new LinkedList<>();
-        body.add(new Point(initialX, initialY + 1)); // Initial position of the snake's tail
-        body.add(new Point(initialX, initialY));     // Initial position of the snake's head
-        this.direction = Direction.RIGHT;            // Initial direction
+        body.add(new Point(Constants.MIDPOINT, Constants.MIDPOINT + 1)); // Initial position of the snake's tail
+        body.add(new Point(Constants.MIDPOINT, Constants.MIDPOINT));
+        this.direction = Direction.RIGHT; // initial direction
     }
 
     public LinkedList<Point> getBody() {
@@ -53,36 +54,10 @@ public class Snake {
         snakeLength = size;
     }
 
-    // public void move() {
-    //     Point oldHead = body.getFirst();
-    //     Point newHead = null;
-
-    //     switch (direction) {
-    //         case UP:
-    //             newHead = new Point(oldHead.x, oldHead.y - 1);
-    //             break;
-    //         case DOWN:
-    //             newHead = new Point(oldHead.x, oldHead.y + 1);
-    //             break;
-    //         case LEFT:
-    //             newHead = new Point(oldHead.x - 1, oldHead.y);
-    //             break;
-    //         case RIGHT:
-    //             newHead = new Point(oldHead.x + 1, oldHead.y);
-    //             break;
-    //     }
-
-    //     body.addFirst(newHead);
-
-    //     while (body.size() > snakeLength) {
-    //         body.removeLast();
-    //     }
-    // }
-
         public void move() {
         Point oldHead = body.getFirst();
         Point newHead = null;
-        int gridSize = 16; // Assuming your grid size is 16, adjust as necessary
+        int gridSize = 16;
 
         switch (direction) {
             case UP:
